@@ -1,16 +1,31 @@
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import OAuth from "../components/OAuth";
 
 export default function ForgotPassword() {
+  // states
   const [formData, setFormData] = useState({
     email: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const stopLoadingWithTiming = () => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 6000);
+  };
+
+  // spreading state variables to use further
+  const { email } = formData;
+
+  // apply common tailwind classes for inputs
   const applyClasses = () => {
     return "w-full text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out";
   };
 
+  // handle state changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -21,7 +36,21 @@ export default function ForgotPassword() {
     });
   };
 
-  const { email } = formData;
+  // reset password function
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Email was sent. Please check your email");
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      stopLoadingWithTiming();
+    }
+  };
 
   return (
     <section>
@@ -36,7 +65,7 @@ export default function ForgotPassword() {
         ></div>
 
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-auto">
-          <form>
+          <form onSubmit={handleResetPassword}>
             <input
               placeholder="Email address"
               name="email"
@@ -56,7 +85,10 @@ export default function ForgotPassword() {
               </p>
             </div>
 
-            <button className="w-full bg-blue-600 text-white p-3 font-medium uppercase rounded shadow-md hover:bg-blue-800 transition duration-150 ease-in-out">
+            <button
+              disabled={loading}
+              className="w-full bg-blue-600 text-white p-3 font-medium uppercase rounded shadow-md hover:bg-blue-800 transition duration-150 ease-in-out disabled:cursor-none disabled:bg-gray-200"
+            >
               Submit
             </button>
 
