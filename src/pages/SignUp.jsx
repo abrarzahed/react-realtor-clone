@@ -10,16 +10,24 @@ import {
 import { db } from "../firebasee";
 import { serverTimestamp, setDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function SignUp() {
-  // form state
+  // states
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
-  // spreading variables to use further
+  const [loading, setLoading] = useState(false);
+
+  const stopLoadingWithTiming = () => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 6000);
+  };
+
   const [showPassword, setShowPassword] = useState(false);
 
   // returning common tailwind classes for inputs
@@ -47,7 +55,12 @@ export default function SignUp() {
   // sign up function
   const handleSignUp = async (e) => {
     e.preventDefault();
+
     try {
+      setLoading(true);
+      if (name.length < 1) {
+        throw new Error("Invalid username");
+      }
       const auth = getAuth();
       const res = await createUserWithEmailAndPassword(auth, email, password);
       // updating username
@@ -66,10 +79,17 @@ export default function SignUp() {
       // sending user data to "users" collection in database
       await setDoc(doc(db, "users", user.uid), formDataCopy);
 
+      // success toast message
+      toast.success("Account has been created");
+
       // redirecting to home page
       navigation("/");
     } catch (error) {
-      console.log(error.code, error.message);
+      // error toast message
+      toast.error(error.message);
+    } finally {
+      // stop loading
+      stopLoadingWithTiming();
     }
   };
 
@@ -142,7 +162,10 @@ export default function SignUp() {
               </p>
             </div>
 
-            <button className="w-full bg-blue-600 text-white p-3 font-medium uppercase rounded shadow-md hover:bg-blue-800 transition duration-150 ease-in-out">
+            <button
+              disabled={loading}
+              className="w-full bg-blue-600 text-white p-3 font-medium uppercase rounded shadow-md hover:bg-blue-800 transition duration-150 ease-in-out disabled:cursor-none disabled:bg-gray-200"
+            >
               Sign up
             </button>
 
