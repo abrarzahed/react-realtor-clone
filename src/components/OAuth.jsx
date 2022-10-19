@@ -7,8 +7,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export default function OAuth() {
+  // states
   const [loading, setLoading] = useState(false);
 
+  // navigation hook initialization
   const navigation = useNavigate();
 
   const stopLoadingWithTiming = () => {
@@ -17,6 +19,7 @@ export default function OAuth() {
     }, 6000);
   };
 
+  // sign in / up with google function
   const handleGoogleClick = async () => {
     setLoading(true);
     try {
@@ -25,6 +28,7 @@ export default function OAuth() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
+      // if document not exist add to the users's collection
       const docRef = doc(db, "users", user.uid);
       const docSnap = await getDoc(docRef);
       if (!docSnap.exists()) {
@@ -34,12 +38,17 @@ export default function OAuth() {
           timestamp: serverTimestamp(),
         });
       }
+
+      // success toast message
       toast.success("Successfully signed in");
 
+      // push to the home page
       navigation("/");
     } catch (error) {
+      // error toast message
       toast.error(error.message);
     } finally {
+      // stop loading stage of button
       stopLoadingWithTiming();
     }
   };

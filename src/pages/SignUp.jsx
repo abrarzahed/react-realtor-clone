@@ -8,7 +8,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { db } from "../firebasee";
-import { serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { serverTimestamp, setDoc, doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -46,7 +46,7 @@ export default function SignUp() {
     });
   };
 
-  // spreading variables to use further
+  // spreading state variables to use further
   const { name, email, password } = formData;
 
   // navigation
@@ -55,9 +55,9 @@ export default function SignUp() {
   // sign up function
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      setLoading(true);
       if (name.length < 1) {
         throw new Error("Invalid username");
       }
@@ -77,7 +77,15 @@ export default function SignUp() {
       formDataCopy.timstamp = serverTimestamp();
 
       // sending user data to "users" collection in database
-      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef, formDataCopy);
+      // if document not exist add to the users's collection
+      if (docSnap.exists()) {
+        console.log("this user already exist");
+        return;
+      } else {
+        await setDoc(docRef, formDataCopy);
+      }
 
       // success toast message
       toast.success("Account has been created");
