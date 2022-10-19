@@ -2,20 +2,32 @@ import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  updateProfile,
+} from "firebase/auth";
+import { db } from "../firebasee";
+import { serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
+  // form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
+  // spreading variables to use further
   const [showPassword, setShowPassword] = useState(false);
 
+  // returning common tailwind classes for inputs
   const applyClasses = () => {
     return "w-full text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out";
   };
 
+  // handling state changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -26,7 +38,40 @@ export default function SignUp() {
     });
   };
 
+  // spreading variables to use further
   const { name, email, password } = formData;
+
+  // navigation
+  const navigation = useNavigate();
+
+  // sign up function
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      // updating username
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+
+      // get user info
+      const user = res.user;
+
+      // creating user object after removing password and after adding timestamp
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timstamp = serverTimestamp();
+
+      // sending user data to "users" collection in database
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+
+      // redirecting to home page
+      navigation("/");
+    } catch (error) {
+      console.log(error.code, error.message);
+    }
+  };
 
   return (
     <section>
@@ -45,7 +90,7 @@ export default function SignUp() {
         </div>
 
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-auto">
-          <form>
+          <form onSubmit={handleSignUp}>
             <input
               placeholder="Enter full name"
               name="name"
