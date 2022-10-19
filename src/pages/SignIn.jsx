@@ -31,7 +31,7 @@ export default function SignIn() {
     <section>
       <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl bg-white rounded-md mt-10">
         <div
-          className="h-full min-h-[420px] rounded-md md:w-[67%] lg:w-[50%] mb-12 md:mb-6 mx-auto relative"
+          className="h-80 md:min-h-[420px] w-full rounded-md md:w-[67%] lg:w-[50%] mb-12 md:mb-6 mx-auto relative"
           style={{
             backgroundImage:
               "url('https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80')",
