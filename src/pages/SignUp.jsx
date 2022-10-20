@@ -109,23 +109,23 @@ export default function SignUp() {
   };
 
   return (
-    <section>
+    <section className="px-4">
       {isSpinning && <Spinner />}
-      <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl mx-auto bg-white rounded-md mt-10">
+      <div className="flex justify-center items-center flex-wrap p-10 max-w-6xl mx-auto bg-white bg-opacity-70 shadow-md rounded-md mt-10">
         <div
-          className="h-80 md:min-h-[460px] w-full rounded-md md:w-[67%] lg:w-[50%] mb-12 md:mb-6 mx-auto relative"
+          className="h-60 md:min-h-[460px] w-full rounded-md md:w-[58%] relative"
           style={{
             backgroundImage:
               "url('https://images.unsplash.com/flagged/photo-1564767609342-620cb19b2357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1073&q=80')",
             backgroundSize: "cover",
           }}
         >
-          <h1 className="text-3xl absolute bg-white p-4 top-0 right-0 text-blue-700 mb-6 border-t border-r font-bold rounded-tr-md rounded-bl-md">
+          <h1 className="text-3xl absolute bg-white uppercase bg-opacity-50 backdrop-blur-sm p-4 top-0 right-0 text-blue-700 mb-6 border-t border-r font-medium rounded-tr-md rounded-bl-md">
             Sign up
           </h1>
         </div>
 
-        <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-auto">
+        <div className="w-full md:w-[38%] mt-10 md:mt-0 md:ml-auto">
           <form onSubmit={handleSignUp}>
             <input
               placeholder="Enter full name"
@@ -162,7 +162,7 @@ export default function SignUp() {
               </span>
             </div>
 
-            <div className="flex justify-between text-sm sm:text-lg mb-6">
+            <div className="flex justify-between text-sm sm:text-md mb-6">
               <p>
                 Already have an account?
                 <Link className="text-red-600" to="/signin">

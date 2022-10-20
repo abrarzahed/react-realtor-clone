@@ -55,6 +55,8 @@ export default function Header() {
             <li
               className={`${applyClasses("/signin")} ${applyClasses(
                 "/profile"
+              )} ${applyClasses("/signup")} ${applyClasses(
+                "/forgot-password"
               )}`}
             >
               <Link to="/profile">{signInOrProfile}</Link>

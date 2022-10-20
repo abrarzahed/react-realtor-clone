@@ -5,6 +5,8 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { db } from "../firebasee";
 import Spinner from "../components/Spinner";
+import { FcHome } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   // auth
@@ -85,48 +87,61 @@ export default function Profile() {
       <h1 className="text-3xl text-gray-700 text-center font-bold">
         My profile
       </h1>
-      <form className="my-6 p-3 w-full md:w-[50%] mx-auto">
-        <input
-          disabled={isDisabled}
-          placeholder="Name"
-          name="name"
-          className={`${applyClasses()} mb-6 ${
-            !isDisabled ? "bg-blue-100" : "white"
-          }`}
-          type="text"
-          value={name}
-          onChange={(e) => handleInputChange(e)}
-        />
-        <input
-          disabled
-          placeholder="Email"
-          name="email"
-          className={`${applyClasses()} mb-6`}
-          type="email"
-          value={email}
-          onChange={(e) => handleInputChange(e)}
-        />
+      <div className="my-6 p-3 w-full md:w-[50%] mx-auto">
+        <form>
+          <input
+            disabled={isDisabled}
+            placeholder="Name"
+            name="name"
+            className={`${applyClasses()} mb-6 ${
+              !isDisabled ? "bg-blue-100" : "white"
+            }`}
+            type="text"
+            value={name}
+            onChange={(e) => handleInputChange(e)}
+          />
+          <input
+            disabled
+            placeholder="Email"
+            name="email"
+            className={`${applyClasses()} mb-6`}
+            type="email"
+            value={email}
+            onChange={(e) => handleInputChange(e)}
+          />
 
-        <div className="flex justify-between items-center text-sm sm:text-lg">
-          <p>
-            <span className="text-gray-600">
-              Do you want to change your name?
-            </span>{" "}
-            <span
-              className={`text-red-600 cursor-pointer font-semibold`}
-              onClick={handleUpdateProfile}
+          <div className="flex justify-between items-center text-sm sm:text-lg">
+            <p>
+              <span className="text-gray-600">
+                Do you want to change your name?
+              </span>{" "}
+              <span
+                className={`text-red-600 cursor-pointer font-semibold`}
+                onClick={handleUpdateProfile}
+              >
+                {isDisabled ? "Edit" : "Save change"}
+              </span>
+            </p>
+
+            <p
+              onClick={handleSignOut}
+              className="cursor-pointer text-blue-600 font-semibold"
             >
-              {isDisabled ? "Edit" : "Save change"}
-            </span>
-          </p>
-          <p
-            onClick={handleSignOut}
-            className="cursor-pointer text-blue-600 font-semibold"
+              Sign out
+            </p>
+          </div>
+        </form>
+
+        <button className="bg-blue-600 text-white uppercase font-semibold my-6 rounded p-3 w-full  shadow-md transition duration-100 hover:bg-blue-800">
+          <Link
+            className="flex justify-center items-center space-x-3"
+            to="/create-listing"
           >
-            Sign out
-          </p>
-        </div>
-      </form>
+            <FcHome className="bg-red-200 rounded-full text-2xl p-[2px]" />
+            <span>Sell or rent home</span>
+          </Link>
+        </button>
+      </div>
     </section>
   );
 }
