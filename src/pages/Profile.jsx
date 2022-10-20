@@ -1,6 +1,9 @@
-import { getAuth } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
+import { db } from "../firebasee";
 
 export default function Profile() {
   // auth
@@ -34,6 +37,32 @@ export default function Profile() {
         [name]: value,
       };
     });
+  };
+
+  // handle profile update
+  const handleUpdateProfile = async () => {
+    if (isDisabled) {
+      setIsDisabled(false);
+    } else {
+      try {
+        if (auth.currentUser.displayName !== "name") {
+          // update display name in firebase authentication
+          await updateProfile(auth.currentUser, {
+            displayName: name,
+          });
+
+          // update user profile data in firebase firestore
+          const docRef = doc(db, "users", auth.currentUser.uid);
+          await updateDoc(docRef, {
+            name,
+          });
+        }
+        toast.success("Profile is updated");
+        setIsDisabled(true);
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
+    }
   };
 
   // sign out function
@@ -77,8 +106,8 @@ export default function Profile() {
               Do you want to change your name?
             </span>{" "}
             <span
-              className="text-red-600 cursor-pointer font-semibold"
-              onClick={() => setIsDisabled(false)}
+              className={`text-red-600 cursor-pointer font-semibold`}
+              onClick={handleUpdateProfile}
             >
               {isDisabled ? "Edit" : "Save change"}
             </span>
