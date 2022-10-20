@@ -31,7 +31,7 @@ export default function SignIn() {
   // navigation
   const navigation = useNavigate();
 
-  // sign up function
+  // handle state change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
