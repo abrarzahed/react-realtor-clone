@@ -1,7 +1,23 @@
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 export default function Header() {
   const location = useLocation();
-  //   const navigate = useNavigate();
+  // states
+  const [signInOrProfile, setSignInOrProfile] = useState("Sign in");
+
+  // auth
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setSignInOrProfile("Profile");
+      } else {
+        setSignInOrProfile("Sign in");
+      }
+    });
+  }, [auth]);
 
   const matchPathRoute = (route) => {
     if (route === location.pathname) return true;
@@ -36,8 +52,12 @@ export default function Header() {
             <li className={`${applyClasses("/offers")}`}>
               <Link to="/offers">Offers</Link>
             </li>
-            <li className={`${applyClasses("/signin")}`}>
-              <Link to="signin">Sign in</Link>
+            <li
+              className={`${applyClasses("/signin")} ${applyClasses(
+                "/profile"
+              )}`}
+            >
+              <Link to="/profile">{signInOrProfile}</Link>
             </li>
           </ul>
         </nav>
