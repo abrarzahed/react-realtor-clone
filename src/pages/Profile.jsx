@@ -110,7 +110,7 @@ export default function Profile() {
             onChange={(e) => handleInputChange(e)}
           />
 
-          <div className="flex justify-between items-center text-sm sm:text-lg">
+          <div className="flex justify-between items-center text-sm sm:text-md">
             <p>
               <span className="text-gray-600">
                 Do you want to change your name?
