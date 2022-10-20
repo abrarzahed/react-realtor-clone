@@ -11,6 +11,7 @@ import { db } from "../firebasee";
 import { serverTimestamp, setDoc, doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
 
 export default function SignUp() {
   // states
@@ -29,6 +30,8 @@ export default function SignUp() {
   };
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const [isSpinning, setIsSpinning] = useState(false);
 
   // returning common tailwind classes for inputs
   const applyClasses = () => {
@@ -58,6 +61,7 @@ export default function SignUp() {
     setLoading(true);
 
     try {
+      setIsSpinning(true);
       if (name.length < 1) {
         throw new Error("Invalid username");
       }
@@ -98,12 +102,16 @@ export default function SignUp() {
     } finally {
       // stop loading
       stopLoadingWithTiming();
+
+      // stop spinner
+      setIsSpinning(false);
     }
   };
 
   return (
     <section>
-      <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl bg-white rounded-md mt-10">
+      {isSpinning && <Spinner />}
+      <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl mx-auto bg-white rounded-md mt-10">
         <div
           className="h-80 md:min-h-[460px] w-full rounded-md md:w-[67%] lg:w-[50%] mb-12 md:mb-6 mx-auto relative"
           style={{

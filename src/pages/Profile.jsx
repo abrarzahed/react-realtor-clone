@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { db } from "../firebasee";
+import Spinner from "../components/Spinner";
 
 export default function Profile() {
   // auth
@@ -17,6 +18,8 @@ export default function Profile() {
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
+
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
 
@@ -45,6 +48,7 @@ export default function Profile() {
       setIsDisabled(false);
     } else {
       try {
+        setIsSpinning(true);
         if (auth.currentUser.displayName !== "name") {
           // update display name in firebase authentication
           await updateProfile(auth.currentUser, {
@@ -61,6 +65,8 @@ export default function Profile() {
         setIsDisabled(true);
       } catch (error) {
         toast.error("Something went wrong");
+      } finally {
+        setIsSpinning(false);
       }
     }
   };
@@ -75,6 +81,7 @@ export default function Profile() {
 
   return (
     <section className="mt-8 max-w-6xl mx-auto">
+      {isSpinning && <Spinner />}
       <h1 className="text-3xl text-gray-700 text-center font-bold">
         My profile
       </h1>

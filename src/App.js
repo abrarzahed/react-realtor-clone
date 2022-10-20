@@ -16,7 +16,7 @@ function App() {
     <>
       <Router>
         <Header />
-        <div className=" max-w-6xl mx-auto px-3">
+        <div className="">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<PrivateRoute />}>

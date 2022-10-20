@@ -3,12 +3,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import OAuth from "../components/OAuth";
+import Spinner from "../components/Spinner";
 
 export default function ForgotPassword() {
   // states
   const [formData, setFormData] = useState({
     email: "",
   });
+
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const stopLoadingWithTiming = () => {
@@ -42,6 +45,8 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
+      setIsSpinning(true);
+
       const auth = getAuth();
       await sendPasswordResetEmail(auth, email);
       toast.success("Email was sent. Please check your email");
@@ -49,11 +54,15 @@ export default function ForgotPassword() {
       toast.error("Something went wrong");
     } finally {
       stopLoadingWithTiming();
+
+      // stop spinner
+      setIsSpinning(false);
     }
   };
 
   return (
     <section>
+      {isSpinning && <Spinner />}
       <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl bg-white rounded-md mt-10">
         <div
           className="h-full min-h-[420px] rounded-md md:w-[67%] lg:w-[50%] mb-12 md:mb-6 mx-auto relative"

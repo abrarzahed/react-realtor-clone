@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import OAuth from "../components/OAuth";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import Spinner from "../components/Spinner";
 
 export default function SignIn() {
   // states
@@ -19,6 +20,8 @@ export default function SignIn() {
       setLoading(false);
     }, 6000);
   };
+
+  const [isSpinning, setIsSpinning] = useState(false);
 
   // apply tailwind common classes to inputs
   const applyClasses = () => {
@@ -47,6 +50,7 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true);
     try {
+      setIsSpinning(true);
       const auth = getAuth();
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -66,12 +70,16 @@ export default function SignIn() {
     } finally {
       // stop loading stage
       stopLoadingWithTiming();
+
+      // stop spinner
+      setIsSpinning(false);
     }
   };
 
   return (
     <section>
-      <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl bg-white rounded-md mt-10">
+      {isSpinning && <Spinner />}
+      <div className="flex justify-center items-center flex-wrap px-6 pt-12 pb-6 max-w-6xl mx-auto bg-white rounded-md mt-10">
         <div
           className="h-80 md:min-h-[420px] w-full rounded-md md:w-[67%] lg:w-[50%] mb-12 md:mb-6 mx-auto relative"
           style={{
