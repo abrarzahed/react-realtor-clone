@@ -1,6 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Spinner from "../components/Spinner";
+
+import {
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
 
 export default function CreateListing() {
+  // auth
+  const auth = getAuth();
+
+  // states
+  const [isSpinning, setIsSpinning] = useState(false);
+
   const [formData, setFormData] = useState({
     type: "sell",
     name: "",
@@ -14,13 +30,30 @@ export default function CreateListing() {
     regularPrice: "",
     discountPrice: "",
     images: {},
+    latitude: 0,
+    longitude: 0,
   });
 
+  // auto input lat & long form geolocation api
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setFormData((prev) => {
+          return {
+            ...prev,
+            latitude,
+            longitude,
+          };
+        });
+      });
+    }
+  }, []);
+
+  // manage state(form data) changes
   const onFieldsChange = (e, fieldValue) => {
     e.preventDefault();
     const { name, type, value, files } = e.target;
-
-    console.log(files);
 
     if (type === "button") {
       setFormData((prev) => {
@@ -50,13 +83,56 @@ export default function CreateListing() {
     }
   };
 
+  // form submit functionalities
+  const onSubmit = async (e) => {
+    e.preventDefault();
+
+    // spinner enable
+    setIsSpinning(true);
+
+    // check regular price > discount price
+    if (formData.discountPrice >= formData.regularPrice) {
+      // spinner disable
+      setIsSpinning(false);
+
+      toast.error("Discount price can not be more then regular price");
+      return;
+    }
+
+    // check images are <= 6 or not
+    if (formData.images.length > 6) {
+      // spinner disable
+      setIsSpinning(false);
+
+      toast.error("Can not upload more than 6 images");
+      return;
+    }
+
+    // image upload
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const fileName = `${auth.currentUser.uid}`;
+      });
+    };
+
+    const imageUrls = await Promise.all(
+      [...formData.images]
+        .map((image) => storeImage(image))
+        .catch((err) => {
+          toast.error("Images were not uploaded");
+        })
+    );
+  };
+
   return (
     <main className="px-4 my-8">
+      {isSpinning && <Spinner />}
       <div className="bg-white p-4 md:p-8 rounded shadow-md max-w-2xl mx-auto">
         <h1 className="text-3xl border-b-2 pb-[14px] mb-6 font-bold text-gray-800">
           Create a Listing
         </h1>
-        <form>
+        <form onSubmit={onSubmit}>
           {/* ============ Sell or Rent ============ */}
           <div className="my-8 input-group">
             <p className="font-semibold mb-3 text-lg text-gray-700">
@@ -211,6 +287,33 @@ export default function CreateListing() {
               required
               onChange={onFieldsChange}
             ></textarea>
+          </div>
+
+          {/* ============ geolocation ============ */}
+          <div className="my-8 input-group">
+            <p className="font-semibold text-lg text-gray-700">
+              Latitude / Longitude
+            </p>
+
+            <p className="mb-3 text-sm">Allow location to have auto input</p>
+            <div className="flex space-x-8 items-center">
+              <input
+                type="number"
+                name="latitude"
+                className="w-full rounded py-[14px] border border-cyan-400 focus:border-cyan-300 text-center text-xl font-semibold"
+                value={formData.latitude}
+                onChange={(e) => onFieldsChange(e)}
+                required
+              />
+              <input
+                type="number"
+                name="longitude"
+                className="w-full rounded py-[14px] border border-cyan-400 focus:border-cyan-300 text-center text-xl font-semibold"
+                value={formData.longitude}
+                onChange={(e) => onFieldsChange(e)}
+                required
+              />
+            </div>
           </div>
 
           {/* ============ description ============ */}

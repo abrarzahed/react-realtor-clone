@@ -20,14 +20,19 @@ function App() {
         <div className="">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<PrivateRoute />}>
+            <Route path="/profile" element={<PrivateRoute path="/signin" />}>
               <Route path="/profile" element={<Profile />} />
             </Route>
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/offers" element={<Offers />} />
-            <Route path="/create-listing" element={<CreateListing />} />
+            <Route
+              path="/create-listing"
+              element={<PrivateRoute path="/signin" />}
+            >
+              <Route path="/create-listing" element={<CreateListing />} />
+            </Route>
           </Routes>
         </div>
       </Router>
