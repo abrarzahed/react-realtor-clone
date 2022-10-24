@@ -11,7 +11,7 @@ import {
 import { getAuth } from "firebase/auth";
 
 import { v4 as uuidV4 } from "uuid";
-import { addDoc, serverTimestamp, doc, collection } from "firebase/firestore";
+import { addDoc, serverTimestamp, collection } from "firebase/firestore";
 import { db } from "../firebasee";
 import { useNavigate } from "react-router";
 
@@ -164,6 +164,7 @@ export default function CreateListing() {
       ...JSON.parse(JSON.stringify(formData)),
       imageUrls,
       timestamp: serverTimestamp(),
+      userRef: auth.currentUser.uid,
     };
 
     // delete unnecessary stuff
@@ -176,7 +177,7 @@ export default function CreateListing() {
     setIsSpinning(false);
     toast.success("Listing is added");
 
-    // redirect to home page after creating listing
+    // redirect to home page under certain category listing
     navigation(`/category/${formDataCopy.type}/${docRef.id}`);
   };
 

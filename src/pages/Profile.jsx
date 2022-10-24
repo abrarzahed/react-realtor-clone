@@ -1,12 +1,22 @@
 import { getAuth, updateProfile } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
-import { useState } from "react";
+import {
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { db } from "../firebasee";
 import Spinner from "../components/Spinner";
 import { FcHome } from "react-icons/fc";
 import { Link } from "react-router-dom";
+
+import MyListings from "../components/MyListings";
 
 export default function Profile() {
   // auth
@@ -20,6 +30,8 @@ export default function Profile() {
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
+
+  const [listings, setListings] = useState(null);
 
   const [isSpinning, setIsSpinning] = useState(false);
 
@@ -81,10 +93,36 @@ export default function Profile() {
     navigation("/");
   };
 
+  // get listings from firebase
+  useEffect(() => {
+    const fetchListings = async () => {
+      const listingsRef = collection(db, "listings");
+      const q = query(
+        listingsRef,
+        where("userRef", "==", auth.currentUser.uid),
+        orderBy("timestamp", "desc")
+      );
+      const querySnap = await getDocs(q);
+
+      const tempListings = [];
+
+      querySnap.forEach((doc) => {
+        return tempListings.push({
+          id: doc.id,
+          data: doc.data(),
+        });
+      });
+
+      setListings(tempListings);
+    };
+
+    fetchListings();
+  }, [auth.currentUser.uid]);
+
   return (
     <section className="mt-8 max-w-6xl mx-auto">
       {isSpinning && <Spinner />}
-      <h1 className="text-3xl text-gray-700 text-center font-bold">
+      <h1 className="text-3xl text-cyan-800 text-center font-bold">
         My profile
       </h1>
       <div className="my-6 p-3 w-full md:w-[50%] mx-auto">
@@ -142,6 +180,8 @@ export default function Profile() {
           </Link>
         </button>
       </div>
+
+      <MyListings listings={listings} />
     </section>
   );
 }
