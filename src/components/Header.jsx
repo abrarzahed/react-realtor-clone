@@ -25,22 +25,22 @@ export default function Header() {
   };
 
   const applyClasses = (route) => {
-    const classes = `py-5 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
-      matchPathRoute(route) && "text-black border-b-red-500"
+    const classes = `py-2 mt-6 sm:mt-0 sm:py-5 text-sm font-semibold text-gray-500 border-b-[3px] border-b-transparent ${
+      matchPathRoute(route) && "text-black font-black border-b-red-500"
     } `;
 
     return classes;
   };
 
   return (
-    <div className="bg-white border-b shadow-sm sticky top-0 z-40">
-      <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
+    <div className="bg-white bg-opacity-50 backdrop-blur-md border-b shadow-sm sticky top-0 z-40">
+      <header className="flex flex-col items-center justify-center sm:flex-row sm:justify-between sm:items-center px-3 max-w-6xl mx-auto">
         <div>
           <Link to="/">
             <img
               src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg"
               alt="realtor-logo"
-              className="h-6 cursor-pointer"
+              className="h-6 cursor-pointer mt-5 sm:mt-0"
             />
           </Link>
         </div>
