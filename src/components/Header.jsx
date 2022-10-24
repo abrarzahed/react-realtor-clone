@@ -25,7 +25,7 @@ export default function Header() {
   };
 
   const applyClasses = (route) => {
-    const classes = `py-4 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
+    const classes = `py-5 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${
       matchPathRoute(route) && "text-black border-b-red-500"
     } `;
 

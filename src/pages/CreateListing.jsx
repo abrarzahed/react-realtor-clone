@@ -10,15 +10,23 @@ import {
 } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
+import { v4 as uuidV4 } from "uuid";
+import { addDoc, serverTimestamp, doc, collection } from "firebase/firestore";
+import { db } from "../firebasee";
+import { useNavigate } from "react-router";
+
 export default function CreateListing() {
   // auth
   const auth = getAuth();
+
+  // navigate
+  const navigation = useNavigate();
 
   // states
   const [isSpinning, setIsSpinning] = useState(false);
 
   const [formData, setFormData] = useState({
-    type: "sell",
+    type: "sale",
     name: "",
     bedrooms: 2,
     bathrooms: 1,
@@ -33,6 +41,9 @@ export default function CreateListing() {
     latitude: 0,
     longitude: 0,
   });
+
+  const [showImageProgress, setShowImageProgress] = useState(false);
+  const [progress, setProgress] = useState("0");
 
   // auto input lat & long form geolocation api
   useEffect(() => {
@@ -91,7 +102,7 @@ export default function CreateListing() {
     setIsSpinning(true);
 
     // check regular price > discount price
-    if (formData.discountPrice >= formData.regularPrice) {
+    if (+formData.discountPrice >= +formData.regularPrice) {
       // spinner disable
       setIsSpinning(false);
 
@@ -112,17 +123,61 @@ export default function CreateListing() {
     const storeImage = async (image) => {
       return new Promise((resolve, reject) => {
         const storage = getStorage();
-        const fileName = `${auth.currentUser.uid}`;
+        const fileName = `${auth.currentUser.uid}-${image.name}-${uuidV4()}`;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            setShowImageProgress(true);
+            const imgProgress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+            setProgress(imgProgress);
+
+            if (snapshot.state === "running") {
+              setProgress(imgProgress);
+            }
+          },
+          (error) => {
+            reject(error);
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              resolve(downloadURL);
+            });
+          }
+        );
       });
     };
 
     const imageUrls = await Promise.all(
-      [...formData.images]
-        .map((image) => storeImage(image))
-        .catch((err) => {
-          toast.error("Images were not uploaded");
-        })
-    );
+      [...formData.images].map((image) => storeImage(image))
+    ).catch((err) => {
+      toast.error("Images were not uploaded");
+      return;
+    });
+
+    // copy form data to send in firebase collection
+    const formDataCopy = {
+      ...JSON.parse(JSON.stringify(formData)),
+      imageUrls,
+      timestamp: serverTimestamp(),
+    };
+
+    // delete unnecessary stuff
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discountPrice;
+
+    const collRef = collection(db, "listings");
+    const docRef = await addDoc(collRef, formDataCopy);
+
+    setIsSpinning(false);
+    toast.success("Listing is added");
+
+    // redirect to home page after creating listing
+    navigation(`/category/${formDataCopy.type}/${docRef.id}`);
   };
 
   return (
@@ -133,23 +188,23 @@ export default function CreateListing() {
           Create a Listing
         </h1>
         <form onSubmit={onSubmit}>
-          {/* ============ Sell or Rent ============ */}
+          {/* ============ sale or Rent ============ */}
           <div className="my-8 input-group">
             <p className="font-semibold mb-3 text-lg text-gray-700">
-              Sell / Rent
+              Sale / Rent
             </p>
             <div className="flex space-x-8 items-center">
               <button
-                onClick={(e) => onFieldsChange(e, "sell")}
+                onClick={(e) => onFieldsChange(e, "sale")}
                 name="type"
                 type="button"
                 className={`w-full border  border-cyan-300 rounded p-3 text-xl font-semibold ${
-                  formData.type === "sell"
+                  formData.type === "sale"
                     ? "bg-cyan-900 text-white"
                     : "bg-white text-cyan-600"
                 }`}
               >
-                Sell
+                Sale
               </button>
               <button
                 onClick={(e) => onFieldsChange(e, "rent")}
@@ -168,7 +223,9 @@ export default function CreateListing() {
 
           {/* ============ name ============ */}
           <div className="my-8 input-group">
-            <p className="font-semibold mb-3 text-lg text-gray-700">Name</p>
+            <p className="font-semibold mb-3 text-lg text-gray-700">
+              Property Name
+            </p>
             <input
               name="name"
               value={formData.name}
@@ -366,7 +423,7 @@ export default function CreateListing() {
           {/* ============ regular price / discount price ============ */}
           <div className="my-8 input-group">
             <p className="font-semibold mb-3 text-lg text-gray-700">
-              Regular Price ($) / Discount Price ($)
+              Regular Price ($) / Discounted Price ($)
             </p>
             <div className="flex space-x-8 items-center">
               <input
@@ -397,6 +454,14 @@ export default function CreateListing() {
             <p className="mb-3 text-sm">
               The first image will be cover (maximum 6 image)
             </p>
+            {showImageProgress && (
+              <div className="w-full my-3 bg-gray-200 h-3 rounded-full">
+                <div
+                  className={`bg-cyan-400 h-full transition duration-1000 rounded-full`}
+                  style={{ width: progress + "%" }}
+                ></div>
+              </div>
+            )}
             <div className="flex space-x-8 items-center">
               <input
                 name="images"
