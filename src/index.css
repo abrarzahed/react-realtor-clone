@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  background: #f7fcff;
+  background: #f0f7fc !important;
 }
 
 .swiper-button-next::after,

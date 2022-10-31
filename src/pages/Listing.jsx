@@ -14,6 +14,7 @@ import SwiperCore, {
 } from "swiper";
 import "swiper/css/bundle";
 import { FaShare } from "react-icons/fa";
+import ListingInfo from "../components/ListingInfo";
 
 export default function Listing() {
   const params = useParams();
@@ -62,7 +63,7 @@ export default function Listing() {
         {listing.imageUrls.map((url, index) => (
           <SwiperSlide key={index}>
             <div
-              className="relative overflow-hidden h-[400px]"
+              className="relative overflow-hidden h-[200px] md:h-[400px]"
               style={{
                 background: `url(${listing.imageUrls[index]}) center no-repeat`,
                 backgroundSize: "cover",
@@ -73,16 +74,18 @@ export default function Listing() {
       </Swiper>
       <div
         onClick={handleCopy}
-        className="fixed top-[10%] right-[3%] z-10 bg-cyan-500 text-white text-2xl shadow-md p-3 rounded-full cursor-pointer"
+        className="fixed top-[13%] right-[3%] z-10 bg-cyan-500 text-white text-2xl shadow-md p-3 rounded-full cursor-pointer"
       >
         <FaShare />
       </div>
 
       {shareLinkCopied && (
-        <div className="fixed top-[14%] right-[3%] z-10 bg-cyan-500 mt-5 text-white text-xl py-1 px-2 rounded">
+        <div className="fixed top-[16%] right-[3%] z-10 bg-cyan-500 mt-5 text-white text-xl py-1 px-2 rounded">
           Link copied
         </div>
       )}
+
+      <ListingInfo listing={listing} />
     </main>
   );
 }
