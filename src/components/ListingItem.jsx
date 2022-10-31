@@ -3,8 +3,10 @@ import Moment from "react-moment";
 import { MdLocationOn } from "react-icons/md";
 import { GiBed } from "react-icons/gi";
 import { FaBath } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 
-export default function ListingItem({ id, data }) {
+export default function ListingItem({ id, data, onDelete, onEdit }) {
   return (
     <li className="relative bg-white overflow-hidden transition-shadow duration-150 shadow-md hover:shadow-2xl flex flex-col rounded ">
       <Link to={`/category/${data.type}/${id}`}>
@@ -63,6 +65,18 @@ export default function ListingItem({ id, data }) {
           </div>
         </div>
       </Link>
+      {onDelete && (
+        <FaTrash
+          className="absolute bottom-3 right-3  text-xl cursor-pointer text-red-500"
+          onClick={onDelete}
+        />
+      )}
+      {onEdit && (
+        <MdEdit
+          className="absolute bottom-[11px] right-9  text-2xl cursor-pointer text-gray-600"
+          onClick={onEdit}
+        />
+      )}
     </li>
   );
 }
