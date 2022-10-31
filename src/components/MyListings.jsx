@@ -13,6 +13,7 @@ export default function MyListings(props) {
       await deleteDoc(doc(db, "listings", id));
 
       toast.success("Listing has been deleted");
+      window.location.reload();
     }
   };
 
