@@ -1,12 +1,25 @@
+import { getAuth } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { useEffect } from "react";
+import { useState } from "react";
 import { AiFillCar } from "react-icons/ai";
 import { FaBath, FaCheckDouble, FaMapMarkedAlt } from "react-icons/fa";
 import { GiBed } from "react-icons/gi";
+import { toast } from "react-toastify";
+import { db } from "../firebasee";
 
 export default function ListingInfo(props) {
+  const auth = getAuth();
+
+  const [landLordContactVisibility, setLandLordContactVisibility] =
+    useState(false);
+  const [landLord, setLandLord] = useState(null);
+  const [message, setMessage] = useState("");
+
   const {
     name,
     offer,
-    discountedPrice,
+    discountPrice,
     regularPrice,
     type,
     address,
@@ -15,35 +28,52 @@ export default function ListingInfo(props) {
     bathrooms,
     isFurnished,
     parkingSpot,
+    userRef,
   } = props.listing;
+
+  // send message to land lord
+  useEffect(() => {
+    const getLandLord = async () => {
+      const docRef = doc(db, "users", userRef);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setLandLord(docSnap.data());
+      } else {
+        toast.error("Could not get land lord data");
+      }
+    };
+    getLandLord();
+  }, [userRef]);
+
+  // handle input change
+  const handleInputChange = (e) => {
+    // e.preventDefault();
+    const { value } = e.target;
+    setMessage(value);
+  };
+
   return (
-    <div className="p-5 md:p-8 max-w-6xl mx-auto my-8 rounded shadow-md md:space-x-10 md:space-y-0 space-y-8  bg-white flex flex-col md:flex-row">
-      <div className="w-full flex flex-col justify-center space-y-3">
-        <h3 className="text-3xl text-gray-700 font-medium">{name}</h3>
-        <p className="text-xl font-bold text-cyan-600">
+    <div className="p-5 md:p-8 max-w-6xl mx-auto mt-12 mb-6 rounded shadow-md md:space-x-10 md:space-y-0 space-y-8  bg-white flex flex-col md:flex-row">
+      <div className="w-full flex flex-col justify-center space-y-4">
+        <h3 className="text-3xl text-gray-600 font-medium">{name}</h3>
+        <p className="text-xl bg-cyan-600 bg-opacity-10 p-3 font-bold text-cyan-600">
           $
           {offer
-            ? discountedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            : regularPrice
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-          {type === "rent" ? " / Month" : ""}
+            ? discountPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            : regularPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+          {type === "rent" ? " / month" : ""}
         </p>
 
         <div className="flex space-x-3 items-center">
           <FaMapMarkedAlt className="text-red-500 text-2xl" />
-          <p className="font-medium text-lg text-gray-700 uppercase">
+          <p className="font-medium text-md text-gray-700 uppercase">
             {address}
           </p>
         </div>
 
         {offer && (
-          <div className="p-3 bg-green-100 rounded text-red-600 text-center text-2xl">
-            $
-            {(+regularPrice - +discountedPrice)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            discount
+          <div className="p-3 bg-green-600 bg-opacity-10 text-green-600 text-xl font-bold">
+            ${+regularPrice - +discountPrice} discount
           </div>
         )}
 
@@ -52,7 +82,7 @@ export default function ListingInfo(props) {
           {description}
         </p>
 
-        <ul className="flex space-x-6 items-center">
+        <ul className="flex space-x-4 space-y-2 md:space-y-0 md:space-x-6  bg-blue-500 bg-opacity-20 p-3 items-center flex-wrap">
           <li className="flex items-center space-x-2">
             <GiBed className="text-2xl text-blue-600" />
             <p className="text-md text-gray-600 font-semibold">
@@ -83,8 +113,50 @@ export default function ListingInfo(props) {
             </li>
           )}
         </ul>
+
+        {userRef !== auth?.currentUser?.uid && (
+          <div className="flex flex-col space-y-4">
+            {!landLordContactVisibility && (
+              <button
+                onClick={() => setLandLordContactVisibility(true)}
+                className="p-3 w-full transition duration-200 text-sm bg-blue-500 rounded text-white uppercase font-medium shadow-md focus:bg-blue-800"
+              >
+                Contact Landlord
+              </button>
+            )}
+            {landLordContactVisibility && (
+              <form>
+                <p className="text-md text-gray-500 font-medium">
+                  Contact {landLord?.name} for "{name}"
+                </p>
+                <textarea
+                  rows="2"
+                  name="message"
+                  className="w-full border transition duration-150 ease-in-out py-2 px-3 text-lg text-gray-700 text-md border-cyan-500 rounded mt-2 focus:bg-blue-50"
+                  placeholder="Message"
+                  value={message}
+                  onChange={handleInputChange}
+                ></textarea>
+                <a
+                  href={`mailto:${landLord?.email}?Subject=${name}&body=${message}`}
+                  className="block w-full mt-2  transition duration-200 text-sm bg-blue-500 rounded text-white uppercase font-medium shadow-md focus:bg-blue-800"
+                >
+                  <p
+                    onClick={() => {
+                      setLandLordContactVisibility(false);
+                      setMessage("");
+                    }}
+                    className="inline-block p-3  w-full text-center"
+                  >
+                    Send Message
+                  </p>
+                </a>
+              </form>
+            )}
+          </div>
+        )}
       </div>
-      <div className="bg-blue-300 min-h-[220px] w-full overflow-hidden">
+      <div className="bg-blue-300 min-h-[220px] rounded w-full overflow-hidden">
         Right
       </div>
     </div>
