@@ -32,6 +32,7 @@ export default function ListingInfo(props) {
     userRef,
     latitude,
     longitude,
+    imageUrls,
   } = props.listing;
 
   // send message to land lord
@@ -169,7 +170,9 @@ export default function ListingInfo(props) {
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <Marker position={[latitude, longitude]}>
             <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
+              <p className="truncate">{name}</p>
+              <p>{address}</p>
+              <img className="rounded-2xl" src={`${imageUrls[0]}`} alt="" />
             </Popup>
           </Marker>
         </MapContainer>
