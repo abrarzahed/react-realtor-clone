@@ -33,7 +33,7 @@ export default function Header() {
   };
 
   return (
-    <div className="bg-white bg-opacity-50 backdrop-blur-md border-b shadow-sm sticky top-0 z-40">
+    <div className="bg-white bg-opacity-50 backdrop-blur-md border-b shadow-sm sticky top-0 z-[10000]">
       <header className="flex flex-col items-center justify-center sm:flex-row sm:justify-between sm:items-center px-3 max-w-6xl mx-auto">
         <div>
           <Link to="/">

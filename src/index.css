@@ -14,3 +14,7 @@ body {
 .swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
   background: #a8daec !important;
 }
+
+.leaflet-control-attribution.leaflet-control {
+  display: none !important;
+}

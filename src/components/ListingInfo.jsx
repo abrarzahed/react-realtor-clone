@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AiFillCar } from "react-icons/ai";
 import { FaBath, FaCheckDouble, FaMapMarkedAlt } from "react-icons/fa";
 import { GiBed } from "react-icons/gi";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import { toast } from "react-toastify";
 import { db } from "../firebasee";
 
@@ -29,6 +30,8 @@ export default function ListingInfo(props) {
     isFurnished,
     parkingSpot,
     userRef,
+    latitude,
+    longitude,
   } = props.listing;
 
   // send message to land lord
@@ -53,7 +56,7 @@ export default function ListingInfo(props) {
   };
 
   return (
-    <div className="p-5 md:p-8 max-w-6xl mx-auto mt-12 mb-6 rounded shadow-md md:space-x-10 md:space-y-0 space-y-8  bg-white flex flex-col md:flex-row">
+    <div className="p-5 md:p-8 max-w-6xl mx-auto my-12 rounded shadow-md md:space-x-10 md:space-y-0 space-y-8 bg-white flex flex-col md:flex-row">
       <div className="w-full flex flex-col justify-center space-y-4">
         <h3 className="text-3xl text-gray-600 font-medium">{name}</h3>
         <p className="text-xl bg-cyan-600 bg-opacity-10 p-3 font-bold text-cyan-600">
@@ -156,8 +159,20 @@ export default function ListingInfo(props) {
           </div>
         )}
       </div>
-      <div className="bg-blue-300 min-h-[220px] rounded w-full overflow-hidden">
-        Right
+      <div className="h-[300px] md:h-auto  border-2 border-[#F0F7FC] rounded w-full">
+        <MapContainer
+          center={[latitude, longitude]}
+          zoom={13}
+          scrollWheelZoom={true}
+          style={{ height: "100%", width: "100%" }}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={[latitude, longitude]}>
+            <Popup>
+              A pretty CSS3 popup. <br /> Easily customizable.
+            </Popup>
+          </Marker>
+        </MapContainer>
       </div>
     </div>
   );
