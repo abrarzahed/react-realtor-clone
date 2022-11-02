@@ -84,8 +84,9 @@ export default function Listing() {
           Link copied
         </div>
       )}
-
-      <ListingInfo listing={listing} />
+      <div className="p-3">
+        <ListingInfo listing={listing} />
+      </div>
     </main>
   );
 }
