@@ -147,7 +147,7 @@ export default function CreateListing() {
     }
 
     // check images are <= 6 or not
-    if (formData.images.length > 6) {
+    if (formData.images?.length > 6) {
       // spinner disable
       setIsSpinning(false);
 
@@ -506,7 +506,6 @@ export default function CreateListing() {
                 className="w-full rounded px-[14px] py-[14px] border border-cyan-400 focus:border-cyan-300 text-center font-semibold"
                 onChange={(e) => onFieldsChange(e)}
                 accept=".jpg,.jpeg,.png,.svg"
-                required
                 multiple
                 maxLength="6"
               />

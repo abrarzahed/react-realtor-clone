@@ -10,7 +10,7 @@ export default function ListingItem({ id, data, onDelete, onEdit }) {
   return (
     <li className="relative bg-white overflow-hidden transition-shadow duration-150 shadow-md hover:shadow-2xl flex flex-col rounded ">
       <Link to={`/category/${data.type}/${id}`}>
-        <div className="overflow-hidden rounded-t-md h-[170px]">
+        <div className="overflow-hidden rounded-t-md max-h-[150px] h-[150px]">
           <img
             className="w-full transition-scale duration-200 ease-in object-cover hover:scale-110"
             loading="lazy"
