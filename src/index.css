@@ -8,7 +8,12 @@ body {
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
-  color: #a8daec;
+  color: #444;
+  background: #fff !important;
+  font-size: 1.6rem !important;
+  font-weight: bold;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
 }
 
 .swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
@@ -18,3 +23,10 @@ body {
 .leaflet-control-attribution.leaflet-control {
   display: none !important;
 }
+
+/* .listing-item:first-child {
+  margin-left: 0 !important;
+}
+.listing-item:last-child {
+  margin-right: 0 !important;
+} */

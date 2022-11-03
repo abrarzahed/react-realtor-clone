@@ -8,11 +8,11 @@ import { MdEdit } from "react-icons/md";
 
 export default function ListingItem({ id, data, onDelete, onEdit }) {
   return (
-    <li className="relative bg-white overflow-hidden transition-shadow duration-150 shadow-md hover:shadow-2xl flex flex-col rounded ">
-      <Link to={`/category/${data.type}/${id}`}>
-        <div className="overflow-hidden rounded-t-md max-h-[150px] h-[150px]">
+    <li className="relative listing-item max-h-[380px] bg-white overflow-hidden transition-shadow m-3 duration-150 shadow-md hover:shadow-2xl flex flex-col rounded ">
+      <Link to={`/category/${data.type}/${id}`} className="contents">
+        <div className="overflow-hidden rounded-t-md h-[155px] max-h-[155px]">
           <img
-            className="w-full transition-scale duration-200 ease-in object-cover hover:scale-110"
+            className="w-full transition-scale duration-200 max-h-[155px] ease-in object-cover hover:scale-110"
             loading="lazy"
             src={data.imageUrls[0]}
             alt=""

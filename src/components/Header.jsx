@@ -37,11 +37,9 @@ export default function Header() {
       <header className="flex flex-col items-center justify-center sm:flex-row sm:justify-between sm:items-center px-3 max-w-6xl mx-auto">
         <div>
           <Link to="/">
-            <img
-              src="https://static.rdc.moveaws.com/images/logos/rdc-logo-default.svg"
-              alt="realtor-logo"
-              className="h-6 cursor-pointer mt-5 sm:mt-0"
-            />
+            <h3 className="text-xl mt-4 md:mt-0 text-slate-500 font-bold md:text-2xl uppercase text-center">
+              <span className="text-red-600">Real</span>tor.Clone
+            </h3>
           </Link>
         </div>
         <nav>

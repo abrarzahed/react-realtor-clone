@@ -81,7 +81,7 @@ export default function HeroSlider() {
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="brand-info absolute  w-[80%] md:w-[50%] flex flex-col space-y-5 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] cursor-auto p-3 z-40"
+              className="brand-info absolute  w-[75%] md:w-[50%] flex flex-col space-y-5 top-[42%] lg:top-[43.5%] left-[50%] translate-x-[-50%] translate-y-[-50%] cursor-auto p-3 z-40"
             >
               <h1 className="text-xl text-white font-bold md:text-4xl uppercase text-center">
                 <span className="text-red-600">Real</span>tor.Clone
@@ -107,7 +107,7 @@ export default function HeroSlider() {
                   data.offer ? "bg-green-700" : "bg-orange-600"
                 }`}
               >
-                $
+                Cost: $
                 {data.offer
                   ? data.discountPrice
                       .toString()

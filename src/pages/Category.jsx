@@ -8,66 +8,69 @@ import {
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import BigTitle from "../components/BigTitle";
 import ListingItem from "../components/ListingItem";
 import Spinner from "../components/Spinner";
 import { db } from "../firebasee";
 
-export default function Offers() {
+export default function Category() {
   const [isSpinning, setIsSpinning] = useState(true);
-  const [offersListing, setOffersListing] = useState([]);
+  const [categoryListing, setCategoryListing] = useState([]);
   const [lastListing, setLastListing] = useState(null);
 
+  const params = useParams();
+
   useEffect(() => {
-    const fetchOffersListing = async () => {
+    const fetchCategoryListing = async () => {
       try {
         // reference
-        const offersListingRef = collection(db, "listings");
+        const categoryListingRef = collection(db, "listings");
         // conditional query
         const q = query(
-          offersListingRef,
-          where("offer", "==", true),
+          categoryListingRef,
+          where("type", "==", params.categoryName),
           orderBy("timestamp", "desc"),
           limit(8)
         );
 
         const tempListing = [];
         // execute query
-        const offersListingSnap = await getDocs(q);
+        const categoryListingSnap = await getDocs(q);
 
         // track last visible listing
         const lastVisibleListing =
-          offersListingSnap.docs[offersListingSnap.docs.length - 1];
+          categoryListingSnap.docs[categoryListingSnap.docs.length - 1];
 
         setLastListing(lastVisibleListing);
 
-        offersListingSnap.forEach((doc) => {
+        categoryListingSnap.forEach((doc) => {
           return tempListing.push({
             id: doc.id,
             data: doc.data(),
           });
         });
 
-        setOffersListing(tempListing);
+        setCategoryListing(tempListing);
       } catch (error) {
         console.log(error.message);
       } finally {
         setIsSpinning(false);
       }
     };
-    fetchOffersListing();
-  }, []);
+    fetchCategoryListing();
+  }, [params.categoryName]);
 
   // increase limit function
   const fetchMoreListing = async () => {
     setIsSpinning(true);
     try {
       // reference
-      const offersListingRef = collection(db, "listings");
+      const categoryListingRef = collection(db, "listings");
       // conditional query
       const q = query(
-        offersListingRef,
-        where("offer", "==", true),
+        categoryListingRef,
+        where("type", "==", params.categoryName),
         orderBy("timestamp", "desc"),
         startAfter(lastListing),
         limit(4)
@@ -75,22 +78,22 @@ export default function Offers() {
 
       const tempListing = [];
       // execute query
-      const offersListingSnap = await getDocs(q);
+      const categoryListingSnap = await getDocs(q);
 
       // track last visible listing
       const lastVisibleListing =
-        offersListingSnap.docs[offersListingSnap.docs.length - 1];
+        categoryListingSnap.docs[categoryListingSnap.docs.length - 1];
 
       setLastListing(lastVisibleListing);
 
-      offersListingSnap.forEach((doc) => {
+      categoryListingSnap.forEach((doc) => {
         return tempListing.push({
           id: doc.id,
           data: doc.data(),
         });
       });
 
-      setOffersListing((prev) => [...prev, ...tempListing]);
+      setCategoryListing((prev) => [...prev, ...tempListing]);
     } catch (error) {
       console.log(error.message);
     } finally {
@@ -101,20 +104,20 @@ export default function Offers() {
   if (isSpinning) {
     return <Spinner />;
   }
-  if (offersListing.length <= 0) {
+  if (categoryListing.length <= 0) {
     return (
       <div>
         <h1 className="mt-6 text-2xl text-red-600 text-center">
-          There are no offers currently available
+          There are no {params.categoryName} currently available
         </h1>
       </div>
     );
   }
   return (
     <main className="max-w-6xl mx-auto mt-10 mb-6 px-3">
-      <BigTitle title="Offers" />
+      <BigTitle title={`Properties in ${params.categoryName}`} />
       <ul className="sm:grid mt-2 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {offersListing.map((listing) => (
+        {categoryListing.map((listing) => (
           <ListingItem key={listing.id} id={listing.id} data={listing.data} />
         ))}
       </ul>

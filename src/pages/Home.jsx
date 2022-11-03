@@ -135,11 +135,11 @@ export default function Home() {
         {/* offer places */}
         {offersListing && offersListing.length > 0 && (
           <div>
-            <BigTitle title="Recent Offers" />
+            <BigTitle className="" title="Recent Offers" />
             <Link to="/offers" className="text-blue-400">
-              <p>Show more offers</p>
+              <p className="ml-3 mb-2">Show more offers</p>
             </Link>
-            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  sm:space-x-5 mt-4 space-y-5 sm:space-y-0">
+            <ul className="sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {offersListing.map((listing) => (
                 <ListingItem
                   key={listing.id}
@@ -154,11 +154,11 @@ export default function Home() {
         {/* rent places */}
         {rentsListing && rentsListing.length > 0 && (
           <div>
-            <BigTitle title="Places for rent" />
+            <BigTitle title="Properties in rent" />
             <Link to="/category/rent" className="text-blue-400">
-              <p>Show more places for rent</p>
+              <p className="ml-3 mb-2">Show more places for rent</p>
             </Link>
-            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:space-x-5 mt-4 space-y-5 sm:space-y-0">
+            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {rentsListing.map((listing) => (
                 <ListingItem
                   key={listing.id}
@@ -173,11 +173,11 @@ export default function Home() {
         {/* sale places */}
         {salesListing && salesListing.length > 0 && (
           <div>
-            <BigTitle title="Places for sale" />
+            <BigTitle title="Properties in sale" />
             <Link to="/category/sale" className="text-blue-400">
-              <p>Show more places for sale</p>
+              <p className="ml-3 mb-2">Show more places for sale</p>
             </Link>
-            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:space-x-5 mt-4 space-y-5 sm:space-y-0">
+            <ul className="sm:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {salesListing.map((listing) => (
                 <ListingItem
                   key={listing.id}

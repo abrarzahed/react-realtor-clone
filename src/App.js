@@ -8,18 +8,20 @@ import Offers from "./pages/Offers";
 import Header from "./components/Header";
 import CreateListing from "./pages/CreateListing";
 import EditListing from "./pages/EditListing";
+import Category from "./pages/Category";
 import Listing from "./pages/Listing";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import PrivateRoute from "./components/PrivateRoute";
+import AppFooter from "./components/AppFooter";
 
 function App() {
   return (
     <>
       <Router>
         <Header />
-        <div className="">
+        <div className="min-h-[80vh]">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<PrivateRoute path="/signin" />}>
@@ -30,6 +32,7 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/offers" element={<Offers />} />
             <Route path="/category/:categoryName/:id" element={<Listing />} />
+            <Route path="/category/:categoryName" element={<Category />} />
             <Route
               path="/create-listing"
               element={<PrivateRoute path="/signin" />}
@@ -44,6 +47,7 @@ function App() {
             </Route>
           </Routes>
         </div>
+        <AppFooter />
       </Router>
       <ToastContainer
         position="bottom-center"
