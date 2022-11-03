@@ -9,6 +9,7 @@ import {
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import BigTitle from "../components/BigTitle";
 import HeroSlider from "../components/HeroSlider";
 import ListingItem from "../components/ListingItem";
 import Spinner from "../components/Spinner";
@@ -134,7 +135,7 @@ export default function Home() {
         {/* offer places */}
         {offersListing && offersListing.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-600">Recent Offers</h2>
+            <BigTitle title="Recent Offers" />
             <Link to="/offers" className="text-blue-400">
               <p>Show more offers</p>
             </Link>
@@ -153,9 +154,7 @@ export default function Home() {
         {/* rent places */}
         {rentsListing && rentsListing.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-600">
-              Places for rent
-            </h2>
+            <BigTitle title="Places for rent" />
             <Link to="/category/rent" className="text-blue-400">
               <p>Show more places for rent</p>
             </Link>
@@ -174,9 +173,7 @@ export default function Home() {
         {/* sale places */}
         {salesListing && salesListing.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-600">
-              Places for sale
-            </h2>
+            <BigTitle title="Places for sale" />
             <Link to="/category/sale" className="text-blue-400">
               <p>Show more places for sale</p>
             </Link>
